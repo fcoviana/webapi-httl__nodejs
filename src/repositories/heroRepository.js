@@ -1,0 +1,26 @@
+const { readFile, writeFile } = require('fs/promises');
+
+class HeroRepository {
+    constructor({ file }) {
+        this.file = file;
+    }
+
+    async __currentFileContent() {
+        return JSON.parse(await readFile(this.file));
+    }
+
+    async find(itemId) {
+      const all = await this.__currentFileContent();
+      if(!itemId) return all;
+      
+      return all.find(({ id }) => itemId === id);
+    }
+}
+
+module.exports = HeroRepository;
+
+const heros = new HeroRepository({
+  file: './../../src/database/data.json'
+});
+
+heros.find(1).then(console.log).catch(err => console.log(err))
